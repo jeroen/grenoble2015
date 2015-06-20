@@ -292,6 +292,31 @@ fromJSON("hugefile.json")
 
   <slide>
     <hgroup>
+      <h2>Streaming in R</h2>
+    </hgroup>
+    <article>
+      <p> <code>stream_in</code> and <code>stream_out</code> read/write data frames
+      as jsonlines to a <b>connection</b> object, such as a file, socket, url or pipe.</p>
+      <pre class="prettyprint" data-lang="r">
+# Stream to terminal (not very useful)
+library(jsonlite)
+library(MASS)
+> stream_out(cats, stdout())
+{"Sex":"F","Bwt":2,"Hwt":7}
+{"Sex":"F","Bwt":2,"Hwt":7.4}
+{"Sex":"F","Bwt":2,"Hwt":9.5}
+{"Sex":"F","Bwt":2.1,"Hwt":7.2}
+{"Sex":"F","Bwt":2.1,"Hwt":7.3}
+{"Sex":"F","Bwt":2.1,"Hwt":7.6}
+{"Sex":"F","Bwt":2.1,"Hwt":8.1}
+{"Sex":"F","Bwt":2.1,"Hwt":8.2}
+{"Sex":"F","Bwt":2.1,"Hwt":8.3}
+</pre>
+    </article>
+  </slide>   
+
+  <slide>
+    <hgroup>
       <h2>Import/export json lines</h2>
     </hgroup>
     <article>
@@ -352,7 +377,7 @@ stream_in(con, function(df){
   cat("Got data frame with", nrow(df), "rows\n")
 }, pagesize = 1000, verbose = FALSE)
 </pre>
-    <p>The default <code>handler</code> collects all pages and rbinds them at the end.</p>
+    <p>The default <code>handler</code> collects all pages and rbinds them at the end (i.e. import).</p>
     </article>
   </slide>    
 
