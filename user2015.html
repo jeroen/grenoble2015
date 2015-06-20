@@ -267,7 +267,7 @@ fromJSON("hugefile.json")
 <b>Error: cannot allocate vector of size 8.1 Gb</b>
 </pre>
 <div class="build">
-<p>Bottlenecks:</p>
+      <p>Bottlenecks:</p>
       <ul>
         <li>Copying huge strings in R is expensive</li>
         <li>Need ton of memory to store entire parse tree</li>
@@ -292,29 +292,95 @@ fromJSON("hugefile.json")
 
   <slide>
     <hgroup>
-      <h2>Import json lines</h2>
+      <h2>Import/export json lines</h2>
     </hgroup>
     <article>
-<p> Read and parse 1000 lines at a time (i.e. 54 iterations)</p>
+      <p> Read and parse 1000 lines at a time (i.e. 54 iterations)</p>
       <pre class="prettyprint" data-lang="r">
 library(jsonlite)
 library(curl)
 con <- curl("https://jeroenooms.github.io/data/diamonds.json")
 mydata <- stream_in(con, pagesize = 1000)
+# opening curl input connection.
+# Found 53940 lines...
+# binding pages together (no custom handler).
+# closing curl input connection.
 </pre>
-<pre data-lang="output">
-opening curl input connection.
-Found 53940 lines...
-binding pages together (no custom handler).
-closing curl input connection.
-</pre>
-<p>Or with gzip compression:</p>
+      <p>Or with gzip compression:</p>
       <pre class="prettyprint" data-lang="r">
 con <- curl("https://jeroenooms.github.io/data/diamonds.json.gz")
 mydata <- stream_in(gzcon(con), pagesize = 1000)
 </pre>
     </article>
   </slide> 
+
+  <slide>
+    <hgroup>
+      <h2>Import/export json lines</h2>
+    </hgroup>
+    <article>
+      <p>Stream flights data to disk</p>
+      <pre class="prettyprint" data-lang="r">
+library(nycflights13)
+stream_out(flights, file(tmp <- tempfile()))
+# Complete! Processed total of 336776 rows.
+</pre>
+      <p>Stream it back into R:</p>
+      <pre class="prettyprint" data-lang="r">
+flights2 <- stream_in(file(tmp))
+# Found 336776 lines...
+# binding pages together (no custom handler).
+all.equal(flights2, as.data.frame(flights))
+# [1] TRUE
+unlink(tmp)
+</pre>
+    </article>
+  </slide>
+
+
+  <slide>
+    <hgroup>
+      <h2>Custom handler function</h2>
+    </hgroup>
+    <article>
+    <p>The behavior of <code>stream_in</code> can be customized by specifying a <code>handler</code> function:</p>
+<pre class="prettyprint" data-lang="r">
+library(curl)
+con <- gzcon(curl("http://jeroenooms.github.io/data/diamonds.json"))
+stream_in(con, function(df){
+  # Processes a page of data
+  cat("Got data frame with", nrow(df), "rows\n")
+}, pagesize = 1000, verbose = FALSE)
+</pre>
+    <p>The default <code>handler</code> collects all pages and rbinds them at the end.</p>
+    </article>
+  </slide>    
+
+  <slide>
+    <hgroup>
+      <h2>Stream process large data</h2>
+    </hgroup>
+    <article>
+      <p>Combine <code>stream_in</code> and <code>stream_out</code> to incrementally process (large) data stream in batches with little memory.</p>
+      <pre class="prettyprint" data-lang="r">
+# Calculate delay for flights over 1000 miles
+library(dplyr)
+library(curl)
+input <- curl("http://jeroenooms.github.io/data/nycflights13.json.gz")
+output <- file(tmp <- tempfile(), open = "wb")
+stream_in(gzcon(input), handler = function(df){
+  df <- filter(df, distance > 1000)
+  df <- mutate(df, delta = dep_delay - arr_delay)
+  stream_out(df, output, verbose = FALSE)
+}, pagesize = 500)
+close(output)
+</pre>
+    </article>
+  </slide>
+
+
+
+
 
   <slide class="thank-you-slide segue nobackground">
     <aside class="gdbar right"><img src="images/google_developers_icon_128.png"></aside>
