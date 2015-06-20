@@ -29,12 +29,12 @@ URL: https://code.google.com/p/io-2012-slides
 
   <slide class="logoslide nobackground">
     <article class="flexbox vcenter">
-      <span><img style="height:300px" src="http://user2015.math.aau.dk/gfx/useR2015.png"></span>
+      <span><img style="height:300px" src="images/user2015/useR2015.png"></span>
     </article>
   </slide>
 
   <slide class="title-slide segue nobackground">
-    <aside class="gdbar"><img src="http://www.r-project.org/Rlogo.png"></aside>
+    <aside class="gdbar"><img src="images/user2015/Rlogo.png"></aside>
     <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
     <hgroup class="auto-fadein">
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
@@ -44,9 +44,9 @@ URL: https://code.google.com/p/io-2012-slides
   </slide>
 
   <slide class="segue dark nobackground">
-    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <aside class="gdbar"><img src="images/user2015/mushroom.png"></aside>
     <hgroup class="auto-fadein">
-      <h2>Part I</h2>
+      <h2>Level 1</h2>
       <h3>Building JSON pipelines in R</h3>
     </hgroup>
   </slide>
@@ -89,16 +89,16 @@ URL: https://code.google.com/p/io-2012-slides
       <ul>
         <li>Lightweight Data Interchange Format</li>
         <li>Easy to parse and generate</li>
+        <li>Map to native types in most languages</li>        
         <li>Standardized: <b>RFC7159</b> (previously <b>RFC4627</b>)</li>
         <li>Unicode (UTF-8)</li>
         <li>Supported in all browsers</li>
-        <li>JSON structures map to native types in most languages</li>
       </ul>
     </article>
-    <hgroup>
+    <hgroup class="build">
       <h2>Implementations for R</h2>
     </hgroup>
-    <article>
+    <article class="build">
       <ul>
         <li>Parsers: <b>rjson</b> (2007), <b>RJSONIO</b> (2010), <b>jsonlite</b> (2013)</li>
         <li>MongoDB: <b>RMongo</b> (2011), <b>rmongodb</b> (2011), <b>mongolite</b> (2014)</li>
@@ -203,7 +203,7 @@ curl("https://api.github.com/repos/hadley/ggplot2/issues") %>%
     <article>
     <p>Aggregation with dplyr</p>
       <pre class="prettyprint" data-lang="r">
-curl("https://api.github.com/repos/rstudio/shiny/commits?per_page=50") %>%
+curl("https://api.github.com/repos/rstudio/shiny/commits") %>%
   fromJSON(flatten = TRUE) %>%
   group_by(author.login) %>%
   summarise(count = n())
@@ -225,7 +225,7 @@ curl("https://api.github.com/repos/rstudio/shiny/commits?per_page=50") %>%
     </hgroup>
     <article class="">
       <pre class="prettyprint" data-lang="r">
-curl("https://api.github.com/repos/rstudio/shiny/commits?per_page=50") %>%
+curl("https://api.github.com/repos/rstudio/shiny/commits") %>%
   fromJSON(flatten = TRUE) %>%
   group_by(author.login) %>%
   summarise(count = n()) %>%
@@ -248,14 +248,73 @@ curl("https://api.github.com/repos/rstudio/shiny/commits?per_page=50") %>%
   </slide>  
 
   <slide class="segue dark nobackground">
-    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <aside class="gdbar"><img src="images/user2015/shells.png"></aside>
     <hgroup class="auto-fadein">
-      <h2>Part II</h2>
+      <h2>Level 2</h2>
       <h3>Streaming</h3>
     </hgroup>
   </slide>
 
+  <slide>
+    <hgroup>
+      <h2>Scaling up</h2>
+    </hgroup>
+    <article>
+    <p>JSON is not very suitable for storing large data:</p>
+<pre class="prettyprint" data-lang="r">
+# This doesn't work...
+fromJSON("hugefile.json")
+<b>Error: cannot allocate vector of size 8.1 Gb</b>
+</pre>
+<div class="build">
+<p>Bottlenecks:</p>
+      <ul>
+        <li>Copying huge strings in R is expensive</li>
+        <li>Need ton of memory to store entire parse tree</li>
+        <li>Cannot access data piecewise or incrementally</li>
+        <li>Takes forever</li>
+      </ul>
+    </article>
+</div>
+  </slide>
 
+
+    <slide>
+    <hgroup>
+      <h2>Streamable JSON (www.ndjson.org)</h2>
+    </hgroup>    
+    <article class="iframewrapper">
+      <iframe scrolling="no" src="http://ndjson.org/"></iframe>
+    </article>
+  </slide>
+
+  <slide class="fill nobackground" style="background-image: url(images/user2015/diamonds.png)"> </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Import json lines</h2>
+    </hgroup>
+    <article>
+<p> Read and parse 1000 lines at a time (i.e. 54 iterations)</p>
+      <pre class="prettyprint" data-lang="r">
+library(jsonlite)
+library(curl)
+con <- curl("https://jeroenooms.github.io/data/diamonds.json")
+mydata <- stream_in(con, pagesize = 1000)
+</pre>
+<pre data-lang="output">
+opening curl input connection.
+Found 53940 lines...
+binding pages together (no custom handler).
+closing curl input connection.
+</pre>
+<p>Or with gzip compression:</p>
+      <pre class="prettyprint" data-lang="r">
+con <- curl("https://jeroenooms.github.io/data/diamonds.json.gz")
+mydata <- stream_in(gzcon(con), pagesize = 1000)
+</pre>
+    </article>
+  </slide> 
 
   <slide class="thank-you-slide segue nobackground">
     <aside class="gdbar right"><img src="images/google_developers_icon_128.png"></aside>

@@ -34,7 +34,7 @@ slides > slide.title-slide:after {
   bottom: 80px;
   right: 40px;
   width: 100%;
-  height: 150px;
+  height: 140px;
 }
 /* line 36, ../scss/io2013.scss */
 slides > slide.title-slide hgroup h1 {
@@ -52,4 +52,10 @@ slides > slide.title-slide hgroup h2 {
 /* line 46, ../scss/io2013.scss */
 slides > slide.title-slide hgroup p {
   margin-top: 3em;
+}
+
+.iframewrapper {
+  border-radius: 10px; 
+  overflow: hidden;
+  height: 500px;
 }
