@@ -1,0 +1,298 @@
+<!--
+Google IO 2012/2013 HTML5 Slide Template
+
+Authors: Eric Bidelman <ebidel@gmail.com>
+         Luke Mahé <lukem@google.com>
+
+URL: https://code.google.com/p/io-2012-slides
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" media="all" href="theme/css/default.css">
+  <link rel="stylesheet" media="all" href="theme/css/io2013.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="js/slides" src="js/require-1.0.8.min.js"></script>
+</head>
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="logoslide nobackground">
+    <article class="flexbox vcenter">
+      <span><img style="height:300px" src="http://user2015.math.aau.dk/gfx/useR2015.png"></span>
+    </article>
+  </slide>
+
+  <slide class="title-slide segue nobackground">
+    <aside class="gdbar"><img src="http://www.r-project.org/Rlogo.png"></aside>
+    <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+    </hgroup>
+  </slide>
+
+  <slide class="segue dark nobackground">
+    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <hgroup class="auto-fadein">
+      <h2>Part I</h2>
+      <h3>Building JSON pipelines in R</h3>
+    </hgroup>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>What is JSON</h2>
+    </hgroup>
+    <article class="smaller">
+      <p>Arrays, Objects and 5 primitives (string, number, true, false, null). Whitespace and linebreaks optional.</p>
+      <pre class="prettyprint" data-lang="json">
+{
+  "topic" :  "jsonlite and mongolite",
+  "talks" : [
+    {
+      "date" : "2015-06-25",
+      "location" : "Grenoble"
+    },{
+      "date" : "2015-07-01",
+      "location" : "Aalborg"
+    }
+  ],
+  "speaker" : {
+    "name" : "Jeroen Ooms",
+    "age" : 30,
+    "affiliation" : "UCLA",
+    "francophone" : false
+  },
+  "slides" : "http://bit.ly/json2015"
+}
+</pre>
+    </article>
+  </slide>  
+
+  <slide>
+    <hgroup>
+      <h2>Why JSON</h2>
+    </hgroup>
+    <article>
+      <ul>
+        <li>Lightweight Data Interchange Format</li>
+        <li>Easy to parse and generate</li>
+        <li>Standardized: <b>RFC7159</b> (previously <b>RFC4627</b>)</li>
+        <li>Unicode (UTF-8)</li>
+        <li>Supported in all browsers</li>
+        <li>JSON structures map to native types in most languages</li>
+      </ul>
+    </article>
+    <hgroup>
+      <h2>Implementations for R</h2>
+    </hgroup>
+    <article>
+      <ul>
+        <li>Parsers: <b>rjson</b> (2007), <b>RJSONIO</b> (2010), <b>jsonlite</b> (2013)</li>
+        <li>MongoDB: <b>RMongo</b> (2011), <b>rmongodb</b> (2011), <b>mongolite</b> (2014)</li>
+      </ul>
+    </article>    
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Example in R</h2>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="r">> json <- '{
+  "topic" :  "jsonlite and mongolite",
+  "talks" : [
+    {
+      "date" : "2015-06-25",
+      "location" : "Grenoble"
+    },{
+      "date" : "2015-07-01",
+      "location" : "Aalborg"
+    }
+  ],
+  "speaker" : {
+    "name" : "Jeroen Ooms",
+    "age" : 30,
+    "affiliation" : "UCLA",
+    "francophone" : false
+  },
+  "slides" : "http://bit.ly/json2015"
+}'
+> talks <- jsonlite::fromJSON(json)
+> print(info$topic)
+[1] "jsonlite and mongolite"
+> print(info$speaker$affiliation)
+[1] "UCLA"
+</pre>
+    </article>
+  </slide>  
+
+  <slide class="fill nobackground" style="background-image: url(images/user2015/json_screenshot1.png)"> </slide> 
+  <slide class="fill nobackground" style="background-image: url(images/user2015/json_screenshot2.png)"> </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Data Frames</h2>
+    </hgroup>
+    <article>
+    <p>jsonlite and mongolite automatically convert data frames</p>
+      <pre class="prettyprint" data-lang="r">
+> json <- toJSON(mtcars)
+> all.equal(mtcars, fromJSON(json))
+TRUE
+</pre>
+
+<p>And they do so pretty <b>fast</b>:</p>
+      <pre class="prettyprint" data-lang="r">
+> data(diamonds, package= "ggplot2")
+> system.time(json <- toJSON(diamonds))
+   user  system elapsed 
+  0.138   0.004   0.142
+> system.time(out <- fromJSON(json))
+   user  system elapsed 
+  0.892   0.022   0.915
+</pre>
+    </article>
+  </slide> 
+
+
+
+  <slide>
+    <hgroup>
+      <h2>Building pipelines</h2>
+    </hgroup>
+    <article>
+      <pre class="prettyprint" data-lang="r">
+library(curl)
+library(jsonlite)
+library(dplyr)
+library(magrittr)
+curl("https://api.github.com/repos/hadley/ggplot2/issues") %>%
+  fromJSON(flatten = TRUE) %>%
+  mutate(date = as.Date(created_at)) %>%
+  filter(user.login == "hadley") %>%
+  select(title, state, date)
+</pre>
+<pre data-lang="output">
+                                        title state       date
+1                  Review all uses of do.call  open 2015-06-19
+2       Standard unit of stroke in geom_point  open 2015-06-18
+3 Add hjust & vjust params to position_jitter  open 2015-06-18
+4        Provide official extension mechanism  open 2015-06-18
+5          Add lims function to parallel labs  open 2015-06-18
+</pre>
+    </article>
+  </slide>  
+
+  <slide>
+    <hgroup>
+      <h2>Building pipelines</h2>
+    </hgroup>
+    <article>
+    <p>Aggregation with dplyr</p>
+      <pre class="prettyprint" data-lang="r">
+curl("https://api.github.com/repos/rstudio/shiny/commits?per_page=50") %>%
+  fromJSON(flatten = TRUE) %>%
+  group_by(author.login) %>%
+  summarise(count = n())
+</pre>
+
+<pre data-lang="output">
+  author.login count
+1      jcheng5    10
+2          wch    29
+3        yihui    11
+</pre>
+<p>But R is not always the end of the pipe...</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Round trip back to JSON</h2>
+    </hgroup>
+    <article class="">
+      <pre class="prettyprint" data-lang="r">
+curl("https://api.github.com/repos/rstudio/shiny/commits?per_page=50") %>%
+  fromJSON(flatten = TRUE) %>%
+  group_by(author.login) %>%
+  summarise(count = n()) %>%
+  <b>toJSON(pretty = TRUE)</b>
+</pre>
+<pre class="prettyprint" data-lang="json">
+[
+  {
+    "author.login": "jcheng5",
+    "count": 10
+  },
+  {
+    "author.login": "wch",
+    "count": 29
+  }, 
+  ...
+] 
+</pre>
+    </article>
+  </slide>  
+
+  <slide class="segue dark nobackground">
+    <aside class="gdbar"><img src="images/google_developers_icon_128.png"></aside>
+    <hgroup class="auto-fadein">
+      <h2>Part II</h2>
+      <h3>Streaming</h3>
+    </hgroup>
+  </slide>
+
+
+
+  <slide class="thank-you-slide segue nobackground">
+    <aside class="gdbar right"><img src="images/google_developers_icon_128.png"></aside>
+    <article class="flexbox vleft auto-fadein">
+      <h2>&lt;Thank You!&gt;</h2>
+      <p>Important contact information goes here.</p>
+    </article>
+    <p class="auto-fadein" data-config-contact>
+      <!-- populated from slide_config.json -->
+    </p>
+  </slide>
+
+  <slide class="logoslide dark nobackground">
+    <article class="flexbox vcenter">
+      <span><img src="images/google_developers_logo_white.png"></span>
+    </article>
+  </slide>
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-XXXXXXXX-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>
