@@ -391,9 +391,9 @@ stream_in(con, function(df){
 # Calculate delay for flights over 1000 miles
 library(dplyr)
 library(curl)
-input <- curl("http://jeroenooms.github.io/data/nycflights13.json.gz")
+con <- gzcon(curl("http://jeroenooms.github.io/data/nycflights13.json.gz"))
 output <- file(tmp <- tempfile(), open = "wb")
-<b>stream_in(gzcon(input), function(df){</b>
+<b>stream_in(con, function(df){</b>
   df <- filter(df, distance > 1000)
   df <- mutate(df, delta = dep_delay - arr_delay)
   <b>stream_out(df, output, verbose = FALSE)</b>
@@ -407,11 +407,47 @@ close(output)
     <aside class="gdbar"><img src="images/user2015/flower.png"></aside>
     <hgroup class="auto-fadein">
       <h2>Level 3</h2>
-      <h3>MongoDB</h3>
+      <h3>R and MongoDB</h3>
     </hgroup>
   </slide>  
 
+  <slide>
+    <hgroup>
+      <h2>What is MongoDB?</h2>
+    </hgroup>
+    <article>
+      <img style="float:right; width: 350px;" src="images/user2015/mongo.jpg" class="reflect" alt="Description" title="Description">
+      <ul>
+        <li>JSON 'document' database</li>
+        <li>Store "humongous" data</li>
+        <li>Open Source (AGPL / Apache)</li>
+        <li>Written in C / C++</li>
+        <li>Active development</li>
+        <li>High quality drivers</li>
+        <li>Well documented</li>
+        <li>Most popular NoSQL DB (http://db-engines.com/en/ranking)</li>
+      </ul>
+    </article>
+  </slide>
 
+  <slide>
+    <hgroup>
+      <h2>How does it work?</h2>
+    </hgroup>
+    <article>
+      <p>Imagine a (very big) ndjson file with an API for:</p>
+      <ul>
+        <li>CRUD</li>
+        <li>search</li>
+        <li>sort</li>
+        <li>index</li>
+        <li>authentication</li>
+        <li>encryption</li>
+        <li>aggregation</li>
+        <li>mapreduce</li>
+      </ul>
+    </article>    
+  </slide>
 
 
 
