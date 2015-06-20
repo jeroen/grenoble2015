@@ -23,7 +23,7 @@ var SLIDE_CONFIG = {
   // Author information
   presenters: [{
     name: 'Jeroen Ooms',
-    company: 'Post Doc / Consultant<br>UCLA',
+    company: 'Postdoc / Consultant<br>UCLA',
     gplus: 'https://plus.google.com/+jeroenooms',
     twitter: '@opencpu',
     www: 'https://jeroenooms.github.io/',

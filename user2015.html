@@ -393,15 +393,23 @@ library(dplyr)
 library(curl)
 input <- curl("http://jeroenooms.github.io/data/nycflights13.json.gz")
 output <- file(tmp <- tempfile(), open = "wb")
-stream_in(gzcon(input), handler = function(df){
+<b>stream_in(gzcon(input), function(df){</b>
   df <- filter(df, distance > 1000)
   df <- mutate(df, delta = dep_delay - arr_delay)
-  stream_out(df, output, verbose = FALSE)
-}, pagesize = 500)
+  <b>stream_out(df, output, verbose = FALSE)</b>
+<b>})</b>
 close(output)
 </pre>
     </article>
   </slide>
+
+  <slide class="segue dark nobackground">
+    <aside class="gdbar"><img src="images/user2015/flower.png"></aside>
+    <hgroup class="auto-fadein">
+      <h2>Level 3</h2>
+      <h3>MongoDB</h3>
+    </hgroup>
+  </slide>  
 
 
 
