@@ -1,8 +1,8 @@
 var SLIDE_CONFIG = {
   // Slide settings
   settings: {
-    title: 'Title Goes Here<br>Up To Two Lines',
-    subtitle: 'Subtitle Goes Here',
+    title: 'jsonlite and mongolite',
+    subtitle: 'Fast and Simple Data IO in R',
     //eventInfo: {
     //  title: 'Google I/O',
     //  date: '6/x/2013'
@@ -22,12 +22,12 @@ var SLIDE_CONFIG = {
 
   // Author information
   presenters: [{
-    name: 'Firstname Lastname',
-    company: 'Job Title<br>Google',
-    gplus: 'http://plus.google.com/1234567890',
-    twitter: '@yourhandle',
-    www: 'http://www.you.com',
-    github: 'http://github.com/you'
+    name: 'Jeroen Ooms',
+    company: 'Post Doc / Consultant<br>UCLA',
+    gplus: 'https://plus.google.com/+jeroenooms',
+    twitter: '@opencpu',
+    www: 'https://jeroenooms.github.io/',
+    github: 'https://github.com/jeroenooms/'
   }/*, {
     name: 'Second Name',
     company: 'Job Title, Google',
