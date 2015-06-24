@@ -449,6 +449,81 @@ close(output)
     </article>    
   </slide>
 
+  <slide>
+    <hgroup>
+      <h2>Terminology</h2>
+      <h3>Mapping concepts</h3>
+    </hgroup>
+    <article>
+      <table>
+        <tr>
+          <th>Relational (SQL)</th><th>Document (Mongo)</th>
+        </tr>
+        <tr>
+          <td>Row / Record</td><td><b>Document</b> (c.f. python structure)</td>
+        </tr>        
+        <tr>
+          <td>Table</td><td><b>Collection</b> (or namespace)</td>
+        </tr>
+        <tr>
+          <td>Database</td><td><b>Database</b></td>
+        </tr>
+        <tr>
+          <td>Query</td><td><b>Query</b></td>
+        </tr>
+      </table>
+    </article>
+  </slide>  
+
+  <slide>
+    <hgroup>
+      <h2>Hello world</h2>
+    </hgroup>
+    <article>
+      <pre class="prettyprint" data-lang="r">
+# Load packages
+library(mongolite)
+library(nycflights13)
+
+# Insert some data
+m <- mongo(collection = "nycflights")
+m$insert(flights)
+# Complete! Processed total of 336776 rows.
+
+# Total number of records
+m$count()
+## [1] 336776
+
+# Matches for given query
+m$count('{"month":1, "day":1}')
+## [1] 842
+</pre>
+
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Query data</h2>
+    </hgroup>
+    <article>
+      <pre class="prettyprint" data-lang="r">
+# Find data
+jan1 <- m$find('{"month":1,"day":1}')
+
+class(jan1)
+# [1] "data.frame"
+
+nrow(jan1)
+# [1] 842
+</pre>
+<p>Sort output</p>
+      <pre class="prettyprint" data-lang="r">
+jan1 <- m$find('{"month":1,"day":1}', sort='{"distance":-1}')
+head(jan1)      
+</pre>
+    </article>
+  </slide>
 
 
   <slide class="thank-you-slide segue nobackground">
