@@ -1,1 +1,567 @@
-user2015.html
+<!--
+Google IO 2012/2013 HTML5 Slide Template
+
+Authors: Eric Bidelman <ebidel@gmail.com>
+         Luke Mahé <lukem@google.com>
+
+URL: https://code.google.com/p/io-2012-slides
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" media="all" href="theme/css/default.css">
+  <link rel="stylesheet" media="all" href="theme/css/io2013.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="js/slides" src="js/require-1.0.8.min.js"></script>
+</head>
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="logoslide nobackground">
+    <article class="flexbox vcenter">
+      <span><img style="height:300px" src="images/user2015/useR2015.png"></span>
+    </article>
+  </slide>
+
+  <slide class="title-slide segue nobackground">
+    <aside class="gdbar"><img src="images/user2015/Rlogo.png"></aside>
+    <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+    </hgroup>
+  </slide>
+
+  <slide class="segue dark nobackground">
+    <aside class="gdbar"><img src="images/user2015/mushroom.png"></aside>
+    <hgroup class="auto-fadein">
+      <h2>Level 1</h2>
+      <h3>Building JSON pipelines in R</h3>
+    </hgroup>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>What is JSON</h2>
+    </hgroup>
+    <article class="smaller">
+      <p>Arrays, Objects and 5 primitives (string, number, true, false, null). Whitespace and linebreaks optional.</p>
+      <pre class="prettyprint" data-lang="json">
+{
+  "topic" :  "jsonlite and mongolite",
+  "talks" : [
+    {
+      "date" : "2015-06-25",
+      "location" : "Grenoble"
+    },{
+      "date" : "2015-07-01",
+      "location" : "Aalborg"
+    }
+  ],
+  "speaker" : {
+    "name" : "Jeroen Ooms",
+    "age" : 30,
+    "affiliation" : "UCLA",
+    "francophone" : false
+  },
+  "slides" : "http://bit.ly/json2015"
+}
+</pre>
+    </article>
+  </slide>  
+
+  <slide>
+    <hgroup>
+      <h2>Why JSON</h2>
+    </hgroup>
+    <article>
+      <ul>
+        <li>Lightweight Data Interchange Format</li>
+        <li>Easy to parse and generate</li>
+        <li>Map to native types in most languages</li>        
+        <li>Standardized: <b>RFC7159</b> (previously <b>RFC4627</b>)</li>
+        <li>Unicode (UTF-8)</li>
+        <li>Supported in all browsers</li>
+      </ul>
+    </article>
+    <hgroup class="build">
+      <h2>Implementations for R</h2>
+    </hgroup>
+    <article class="build">
+      <ul>
+        <li>Parsers: <b>rjson</b> (2007), <b>RJSONIO</b> (2010), <b>jsonlite</b> (2013)</li>
+        <li>MongoDB: <b>RMongo</b> (2011), <b>rmongodb</b> (2011), <b>mongolite</b> (2014)</li>
+      </ul>
+    </article>    
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Example in R</h2>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="r">> json <- '{
+  "topic" :  "jsonlite and mongolite",
+  "talks" : [
+    {
+      "date" : "2015-06-25",
+      "location" : "Grenoble"
+    },{
+      "date" : "2015-07-01",
+      "location" : "Aalborg"
+    }
+  ],
+  "speaker" : {
+    "name" : "Jeroen Ooms",
+    "age" : 30,
+    "affiliation" : "UCLA",
+    "francophone" : false
+  },
+  "slides" : "http://bit.ly/json2015"
+}'
+> talks <- jsonlite::fromJSON(json)
+> print(info$topic)
+[1] "jsonlite and mongolite"
+> print(info$speaker$affiliation)
+[1] "UCLA"
+</pre>
+    </article>
+  </slide>  
+
+  <slide class="fill nobackground" style="background-image: url(images/user2015/json_screenshot1.png)"> </slide> 
+  <slide class="fill nobackground" style="background-image: url(images/user2015/json_screenshot2.png)"> </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Data Frames</h2>
+    </hgroup>
+    <article>
+    <p>jsonlite and mongolite automatically convert data frames</p>
+      <pre class="prettyprint" data-lang="r">
+> json <- toJSON(mtcars)
+> all.equal(mtcars, fromJSON(json))
+TRUE
+</pre>
+
+<p>And they do so pretty <b>fast</b>:</p>
+      <pre class="prettyprint" data-lang="r">
+> data(diamonds, package= "ggplot2")
+> system.time(json <- toJSON(diamonds))
+   user  system elapsed 
+  0.138   0.004   0.142
+> system.time(out <- fromJSON(json))
+   user  system elapsed 
+  0.892   0.022   0.915
+</pre>
+    </article>
+  </slide> 
+
+
+
+  <slide>
+    <hgroup>
+      <h2>Building pipelines</h2>
+    </hgroup>
+    <article>
+      <pre class="prettyprint" data-lang="r">
+library(curl)
+library(jsonlite)
+library(dplyr)
+library(magrittr)
+curl("https://api.github.com/repos/hadley/ggplot2/issues") %>%
+  fromJSON(flatten = TRUE) %>%
+  mutate(date = as.Date(created_at)) %>%
+  filter(user.login == "hadley") %>%
+  select(title, state, date)
+</pre>
+<pre data-lang="output">
+                                        title state       date
+1                  Review all uses of do.call  open 2015-06-19
+2       Standard unit of stroke in geom_point  open 2015-06-18
+3 Add hjust & vjust params to position_jitter  open 2015-06-18
+4        Provide official extension mechanism  open 2015-06-18
+5          Add lims function to parallel labs  open 2015-06-18
+</pre>
+    </article>
+  </slide>  
+
+  <slide>
+    <hgroup>
+      <h2>Building pipelines</h2>
+    </hgroup>
+    <article>
+    <p>Aggregation with dplyr</p>
+      <pre class="prettyprint" data-lang="r">
+curl("https://api.github.com/repos/rstudio/shiny/commits") %>%
+  fromJSON(flatten = TRUE) %>%
+  group_by(author.login) %>%
+  summarise(count = n())
+</pre>
+
+<pre data-lang="output">
+  author.login count
+1      jcheng5    10
+2          wch    29
+3        yihui    11
+</pre>
+<p>But R is not always the end of the pipe...</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Round trip back to JSON</h2>
+    </hgroup>
+    <article class="">
+      <pre class="prettyprint" data-lang="r">
+curl("https://api.github.com/repos/rstudio/shiny/commits") %>%
+  fromJSON(flatten = TRUE) %>%
+  group_by(author.login) %>%
+  summarise(count = n()) %>%
+  <b>toJSON(pretty = TRUE)</b>
+</pre>
+<pre class="prettyprint" data-lang="json">
+[
+  {
+    "author.login": "jcheng5",
+    "count": 10
+  },
+  {
+    "author.login": "wch",
+    "count": 29
+  }, 
+  ...
+] 
+</pre>
+    </article>
+  </slide>  
+
+  <slide class="segue dark nobackground">
+    <aside class="gdbar"><img src="images/user2015/shells.png"></aside>
+    <hgroup class="auto-fadein">
+      <h2>Level 2</h2>
+      <h3>Streaming</h3>
+    </hgroup>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Scaling up</h2>
+    </hgroup>
+    <article>
+    <p>JSON is not very suitable for storing large data:</p>
+<pre class="prettyprint" data-lang="r">
+# This doesn't work...
+fromJSON("hugefile.json")
+<b>Error: cannot allocate vector of size 8.1 Gb</b>
+</pre>
+<div class="build">
+      <p>Bottlenecks:</p>
+      <ul>
+        <li>Copying huge strings in R is expensive</li>
+        <li>Need ton of memory to store entire parse tree</li>
+        <li>Cannot access data piecewise or incrementally</li>
+        <li>Takes forever</li>
+      </ul>
+    </article>
+</div>
+  </slide>
+
+
+    <slide>
+    <hgroup>
+      <h2>Streamable JSON (www.ndjson.org)</h2>
+    </hgroup>    
+    <article class="iframewrapper">
+      <iframe scrolling="no" src="http://ndjson.org/"></iframe>
+    </article>
+  </slide>
+
+  <slide class="fill nobackground" style="background-image: url(images/user2015/diamonds.png)"> </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Streaming in R</h2>
+    </hgroup>
+    <article>
+      <p> <code>stream_in</code> and <code>stream_out</code> read/write data frames
+      as jsonlines to a <b>connection</b> object, such as a file, socket, url or pipe.</p>
+      <pre class="prettyprint" data-lang="r">
+# Stream to terminal (not very useful)
+library(jsonlite)
+library(MASS)
+> stream_out(cats, stdout())
+{"Sex":"F","Bwt":2,"Hwt":7}
+{"Sex":"F","Bwt":2,"Hwt":7.4}
+{"Sex":"F","Bwt":2,"Hwt":9.5}
+{"Sex":"F","Bwt":2.1,"Hwt":7.2}
+{"Sex":"F","Bwt":2.1,"Hwt":7.3}
+{"Sex":"F","Bwt":2.1,"Hwt":7.6}
+{"Sex":"F","Bwt":2.1,"Hwt":8.1}
+{"Sex":"F","Bwt":2.1,"Hwt":8.2}
+{"Sex":"F","Bwt":2.1,"Hwt":8.3}
+</pre>
+    </article>
+  </slide>   
+
+  <slide>
+    <hgroup>
+      <h2>Import/export json lines</h2>
+    </hgroup>
+    <article>
+      <p> Read and parse 1000 lines at a time (i.e. 54 iterations)</p>
+      <pre class="prettyprint" data-lang="r">
+library(jsonlite)
+library(curl)
+con <- curl("https://jeroenooms.github.io/data/diamonds.json")
+mydata <- stream_in(con, pagesize = 1000)
+# opening curl input connection.
+# Found 53940 lines...
+# binding pages together (no custom handler).
+# closing curl input connection.
+</pre>
+      <p>Or with gzip compression:</p>
+      <pre class="prettyprint" data-lang="r">
+con <- curl("https://jeroenooms.github.io/data/diamonds.json.gz")
+mydata <- stream_in(gzcon(con), pagesize = 1000)
+</pre>
+    </article>
+  </slide> 
+
+  <slide>
+    <hgroup>
+      <h2>Import/export json lines</h2>
+    </hgroup>
+    <article>
+      <p>Stream flights data to disk</p>
+      <pre class="prettyprint" data-lang="r">
+library(nycflights13)
+stream_out(flights, file(tmp <- tempfile()))
+# Complete! Processed total of 336776 rows.
+</pre>
+      <p>Stream it back into R:</p>
+      <pre class="prettyprint" data-lang="r">
+flights2 <- stream_in(file(tmp))
+# Found 336776 lines...
+# binding pages together (no custom handler).
+all.equal(flights2, as.data.frame(flights))
+# [1] TRUE
+unlink(tmp)
+</pre>
+    </article>
+  </slide>
+
+
+  <slide>
+    <hgroup>
+      <h2>Custom handler function</h2>
+    </hgroup>
+    <article>
+    <p>The behavior of <code>stream_in</code> can be customized by specifying a <code>handler</code> function:</p>
+<pre class="prettyprint" data-lang="r">
+library(curl)
+con <- gzcon(curl("http://jeroenooms.github.io/data/diamonds.json"))
+stream_in(con, function(df){
+  # Processes a page of data
+  cat("Got data frame with", nrow(df), "rows\n")
+}, pagesize = 1000, verbose = FALSE)
+</pre>
+    <p>The default <code>handler</code> collects all pages and rbinds them at the end (i.e. import).</p>
+    </article>
+  </slide>    
+
+  <slide>
+    <hgroup>
+      <h2>Stream process large data</h2>
+    </hgroup>
+    <article>
+      <p>Combine <code>stream_in</code> and <code>stream_out</code> to incrementally process (large) data stream in batches with little memory.</p>
+      <pre class="prettyprint" data-lang="r">
+# Calculate delay for flights over 1000 miles
+library(dplyr)
+library(curl)
+con <- gzcon(curl("http://jeroenooms.github.io/data/nycflights13.json.gz"))
+output <- file(tmp <- tempfile(), open = "wb")
+<b>stream_in(con, function(df){</b>
+  df <- filter(df, distance > 1000)
+  df <- mutate(df, delta = dep_delay - arr_delay)
+  <b>stream_out(df, output, verbose = FALSE)</b>
+<b>})</b>
+close(output)
+</pre>
+    </article>
+  </slide>
+
+  <slide class="segue dark nobackground">
+    <aside class="gdbar"><img src="images/user2015/flower.png"></aside>
+    <hgroup class="auto-fadein">
+      <h2>Level 3</h2>
+      <h3>R and MongoDB</h3>
+    </hgroup>
+  </slide>  
+
+  <slide>
+    <hgroup>
+      <h2>What is MongoDB?</h2>
+    </hgroup>
+    <article>
+      <img style="float:right; width: 350px;" src="images/user2015/mongo.jpg" class="reflect" alt="Description" title="Description">
+      <ul>
+        <li>JSON 'document' database</li>
+        <li>Store "humongous" data</li>
+        <li>Open Source (AGPL / Apache)</li>
+        <li>Written in C / C++</li>
+        <li>Active development</li>
+        <li>High quality drivers</li>
+        <li>Well documented</li>
+        <li>Most popular NoSQL DB (http://db-engines.com/en/ranking)</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>How does it work?</h2>
+    </hgroup>
+    <article>
+      <p>Imagine a (very big) ndjson file with an API for:</p>
+      <ul>
+        <li>CRUD</li>
+        <li>search</li>
+        <li>sort</li>
+        <li>index</li>
+        <li>authentication</li>
+        <li>encryption</li>
+        <li>aggregation</li>
+        <li>mapreduce</li>
+      </ul>
+    </article>    
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Terminology</h2>
+      <h3>Mapping concepts</h3>
+    </hgroup>
+    <article>
+      <table>
+        <tr>
+          <th>Relational (SQL)</th><th>Document (Mongo)</th>
+        </tr>
+        <tr>
+          <td>Row / Record</td><td><b>Document</b> (c.f. python structure)</td>
+        </tr>        
+        <tr>
+          <td>Table</td><td><b>Collection</b> (or namespace)</td>
+        </tr>
+        <tr>
+          <td>Database</td><td><b>Database</b></td>
+        </tr>
+        <tr>
+          <td>Query</td><td><b>Query</b></td>
+        </tr>
+      </table>
+    </article>
+  </slide>  
+
+  <slide>
+    <hgroup>
+      <h2>Hello world</h2>
+    </hgroup>
+    <article>
+      <pre class="prettyprint" data-lang="r">
+# Load packages
+library(mongolite)
+library(nycflights13)
+
+# Insert some data
+m <- mongo(collection = "nycflights")
+m$insert(flights)
+# Complete! Processed total of 336776 rows.
+
+# Total number of records
+m$count()
+## [1] 336776
+
+# Matches for given query
+m$count('{"month":1, "day":1}')
+## [1] 842
+</pre>
+
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Query data</h2>
+    </hgroup>
+    <article>
+      <pre class="prettyprint" data-lang="r">
+# Find data
+jan1 <- m$find('{"month":1,"day":1}')
+
+class(jan1)
+# [1] "data.frame"
+
+nrow(jan1)
+# [1] 842
+</pre>
+<p>Sort output</p>
+      <pre class="prettyprint" data-lang="r">
+jan1 <- m$find('{"month":1,"day":1}', sort='{"distance":-1}')
+head(jan1)      
+</pre>
+    </article>
+  </slide>
+
+
+  <slide class="thank-you-slide segue nobackground">
+    <aside class="gdbar right"><img src="images/google_developers_icon_128.png"></aside>
+    <article class="flexbox vleft auto-fadein">
+      <h2>&lt;Thank You!&gt;</h2>
+      <p>Important contact information goes here.</p>
+    </article>
+    <p class="auto-fadein" data-config-contact>
+      <!-- populated from slide_config.json -->
+    </p>
+  </slide>
+
+  <slide class="logoslide dark nobackground">
+    <article class="flexbox vcenter">
+      <span><img src="images/google_developers_logo_white.png"></span>
+    </article>
+  </slide>
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-XXXXXXXX-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>
