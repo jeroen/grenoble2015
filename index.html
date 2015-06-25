@@ -544,7 +544,64 @@ C:\mongodb\bin\mongod.exe --dbpath C:\data\db
 
   <slide>
     <hgroup>
-      <h2>Hello world</h2>
+      <h2>Test the server</h2>
+    </hgroup>
+    <article>
+      <p>Use CLI to connect to (local) server as guest</p>
+      <pre data-lang="sh">
+mongo
+</pre>
+    <p>Using the JavaScript Console:</p>
+      <pre class="prettyprint" data-lang="javascript">
+use test
+// switched to db test
+db.snacks.insert({"name" : "chocolate", "count" : 3})
+// WriteResult({ "nInserted" : 1 })
+db.snacks.count()
+// 1
+db.snacks.find()
+// { "_id" : ObjectId("55852c68170f4e4b6546e0ed"), "name" : "chocolate", "count" : 3 }
+</pre>    
+    </article>
+
+  </slide> 
+
+  <slide>
+    <hgroup>
+      <h2>Connect from R</h2>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="r">
+library(mongolite)
+m <- mongo(collection = "test",  db = "test", url = "mongodb://localhost"))
+</pre>
+<p>List methods</p>
+<pre class="prettyprint" data-lang="r">
+> print(m)
+Mongo collection 'test' 
+ $aggregate(pipeline = "{}", handler = NULL, pagesize = 1000) 
+ $count(query = "{}") 
+ $distinct(key, query = "{}") 
+ $drop() 
+ $export(con = stdout(), bson = FALSE) 
+ $find(query = "{}", fields = "{\"_id\":0}", sort = "{}", 
+   skip = 0, limit = 0, handler = NULL, pagesize = 1000) 
+ $import(con, bson = FALSE) 
+ $index(add = NULL, remove = NULL) 
+ $info() 
+ $insert(data, pagesize = 1000) 
+ $mapreduce(map, reduce, query = "{}", sort = "{}", limit = 0, out = NULL) 
+ $remove(query, multiple = FALSE) 
+ $rename(name, db = NULL) 
+ $update(query, update = "{\"$set\":{}}", upsert = FALSE, multiple = FALSE) 
+ </pre>
+
+    </article>
+  </slide>   
+
+  <slide>
+    <hgroup>
+      <h2>Hello World</h2>
     </hgroup>
     <article>
       <pre class="prettyprint" data-lang="r">
