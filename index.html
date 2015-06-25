@@ -673,6 +673,53 @@ m$index(add = "distance")
 out  <- m$find('{}', sort='{"distance":-1}')
 </pre>
     </article>
+  </slide>
+
+
+  <slide>
+    <hgroup>
+      <h2>Indexing</h2>
+    </hgroup>
+    <article>
+
+<p>List current indices (<code>_id</code> is default)</p>
+      <pre class="prettyprint" data-lang="r">
+m$index()
+#   v key._id key.distance       name           ns
+# 1 1       1           NA       _id_ test.flights
+# 2 1      NA            1 distance_1 test.flights
+</pre>
+
+<p>Cross field index (for multi sort)</p>
+      <pre class="prettyprint" data-lang="r">
+m$index(add = '{"year": true, "month":true, "day":true}')
+#   v key._id key.distance key.year key.month key.day                 name           ns
+# 1 1       1           NA       NA        NA      NA                 _id_ test.flights
+# 2 1      NA            1       NA        NA      NA           distance_1 test.flights
+# 3 1      NA           NA     TRUE      TRUE    TRUE year_0_month_0_day_0 test.flights
+</pre>
+
+
+    </article>
+  </slide>      
+
+
+ <slide>
+    <hgroup>
+      <h2>Distinct</h2>
+    </hgroup>
+    <article>
+      <p> List unique values for a field within a collection</p>
+      <pre class="prettyprint" data-lang="r">
+m$distinct("carrier")
+# [1] "UA" "AA" "B6" "DL" "EV" "MQ" "US" "WN" "VX" "FL" "AS" "9E" "F9" "HA" "YV" "OO"
+</pre>
+      <p> List unique values for a query</p>
+      <pre class="prettyprint" data-lang="r">
+m$distinct("carrier", query = '{"distance":{"$gt":3000}}')
+# [1] "HA" "UA"
+</pre>
+    </article>
   </slide>  
 
 
