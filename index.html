@@ -701,7 +701,36 @@ m$index(add = '{"year": true, "month":true, "day":true}')
 
 
     </article>
-  </slide>      
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Indexing Benchmarks</h2>
+    </hgroup>
+    <article>
+      <pre class="prettyprint" data-lang="r">
+system.time(m$count('{"day":31, "month":12}'))
+#   user  system elapsed 
+# 0.000   0.000   0.125
+
+m$index(add="month")
+system.time(m$count('{"day":31, "month":12}'))
+#   user  system elapsed 
+# 0.000   0.000   0.028
+
+m$index(add="day")
+system.time(m$count('{"day":31, "month":12}'))
+#   user  system elapsed 
+# 0.000   0.000   0.006
+
+m$index(add = '{"day":true, "month":true}')
+system.time(m$count('{"day":31, "month":12}'))
+#   user  system elapsed
+# 0.000   0.000   0.001
+</pre>
+
+    </article>
+  </slide>       
 
 
  <slide>
@@ -720,7 +749,29 @@ m$distinct("carrier", query = '{"distance":{"$gt":3000}}')
 # [1] "HA" "UA"
 </pre>
     </article>
-  </slide>  
+  </slide>
+
+ <slide>
+    <hgroup>
+      <h2>Remove</h2>
+    </hgroup>
+    <article>
+      <p> Delete all query matches</p>
+      <pre class="prettyprint" data-lang="r">
+m$count() # 336776
+m$remove('{"carrier": "UA"}', multiple = TRUE)
+m$count() # 278111
+</pre>
+      <p> Delete by oid</p>
+      <pre class="prettyprint" data-lang="r">
+m$remove('{"_id":{"$oid":"4d512b45cc9374271b02ec4f"}}')
+</pre>
+      <p> Drop entire collection (including indices, etc)</p>
+      <pre class="prettyprint" data-lang="r">
+m$drop()
+</pre>
+    </article>
+  </slide>    
 
 
   <slide class="thank-you-slide segue nobackground">
