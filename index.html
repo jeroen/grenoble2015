@@ -818,7 +818,32 @@ m$remove('{"_id":{"$oid":"4d512b45cc9374271b02ec4f"}}')
 m$drop()
 </pre>
     </article>
-  </slide>    
+  </slide>
+
+ <slide>
+    <hgroup>
+      <h2>Import / Export</h2>
+    </hgroup>
+    <article>
+      <p> Stream jsonlines into mongo</p>
+      <pre class="prettyprint" data-lang="r">
+library(curl)
+library(mongolite)
+m2 <- mongo("diamonds")
+m2$import(curl("https://jeroenooms.github.io/data/diamonds.json"))
+m2$count()
+# [1] 53940
+</pre>
+      <p> Export to jsonlintes</p>
+      <pre class="prettyprint" data-lang="r">
+m2$export(file("~/diamonds.ndjson"))
+
+# Test that it worked
+library(jsonlite)
+dmd <- stream_in(file("~/diamonds.ndjson"))
+</pre>
+    </article>
+  </slide>   
 
 
   <slide class="thank-you-slide segue nobackground">
