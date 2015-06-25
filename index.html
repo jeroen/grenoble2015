@@ -601,7 +601,7 @@ Mongo collection 'test'
 
   <slide>
     <hgroup>
-      <h2>Hello World</h2>
+      <h2>Insert data</h2>
     </hgroup>
     <article>
       <pre class="prettyprint" data-lang="r">
@@ -628,26 +628,52 @@ m$count('{"month":1, "day":1}')
 
   <slide>
     <hgroup>
-      <h2>Query data</h2>
+      <h2>Retrieve data</h2>
     </hgroup>
     <article>
       <pre class="prettyprint" data-lang="r">
-# Find data
+# Query data
 jan1 <- m$find('{"month":1,"day":1}')
+nrow(jan1) # [1] 842
 
-class(jan1)
-# [1] "data.frame"
+test <- m$find(limit = 1000)
+nrow(test) # [1] 1000
 
-nrow(jan1)
-# [1] 842
+# Select fields
+test <- m$find(fields = '{"tailnum" : true, "distance" : true}')
+names(test)
+#[1] "_id"      "tailnum"  "distance"
+
+# Select fields ommiting id 
+test <- m$find(fields = '{"tailnum" : true, "distance" : true, "_id": false}')
+names(test)
+#[1] "tailnum"  "distance"
+
 </pre>
-<p>Sort output</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Sorting</h2>
+    </hgroup>
+    <article>
       <pre class="prettyprint" data-lang="r">
 jan1 <- m$find('{"month":1,"day":1}', sort='{"distance":-1}')
 head(jan1)      
 </pre>
+<p>Sort larger data </p>
+      <pre class="prettyprint" data-lang="r">
+out  <- m$find('{}', sort='{"distance":-1}')
+# Executor error: Overflow sort stage buffered data usage ...
+</pre>
+<p>Need and index to sort large collection</p>
+      <pre class="prettyprint" data-lang="r">
+m$index(add = "distance")
+out  <- m$find('{}', sort='{"distance":-1}')
+</pre>
     </article>
-  </slide>
+  </slide>  
 
 
   <slide class="thank-you-slide segue nobackground">
