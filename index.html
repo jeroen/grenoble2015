@@ -489,6 +489,46 @@ close(output)
         </tr>
       </table>
     </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Installing MongoDB</h2>
+    </hgroup>
+    <article>
+      <h3>On Mac:</h3>
+<pre data-lang="sh">
+brew install mongodb
+</pre>
+
+      <h3>On Debian / Ubuntu</h3>
+<pre data-lang="sh">
+sudo apt-get install mongodb-server
+</pre>  
+
+      <h3>Windows / Fedora / Redhat: </h3>
+       Download from <a href="https://www.mongodb.org/downloads">https://www.mongodb.org/downloads</a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Running MongoDB</h2>
+    </hgroup>
+    <article>
+      <h3>Linux / Mac:</h3>
+<pre data-lang="sh">
+mkdir -p /data/db
+mongod --dbpath /data/db
+</pre>
+
+      <h3>Windows</h3>
+<pre data-lang="sh">
+md C:\data\db
+C:\mongodb\bin\mongod.exe --dbpath C:\data\db
+</pre>  
+
+    </article>
   </slide>  
 
   <slide>
