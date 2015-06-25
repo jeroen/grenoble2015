@@ -544,7 +544,7 @@ C:\mongodb\bin\mongod.exe --dbpath C:\data\db
 
   <slide>
     <hgroup>
-      <h2>Test the server</h2>
+      <h2>Test the Server</h2>
     </hgroup>
     <article>
       <p>Use CLI to connect to (local) server as guest</p>
@@ -568,7 +568,7 @@ db.snacks.find()
 
   <slide>
     <hgroup>
-      <h2>Connect from R</h2>
+      <h2>Connect with R</h2>
     </hgroup>
     <article class="smaller">
       <pre class="prettyprint" data-lang="r">
@@ -628,7 +628,7 @@ m$count('{"month":1, "day":1}')
 
   <slide>
     <hgroup>
-      <h2>Retrieve data</h2>
+      <h2>Retrieve Data</h2>
     </hgroup>
     <article>
       <pre class="prettyprint" data-lang="r">
@@ -732,11 +732,9 @@ system.time(m$count('{"day":31, "month":12}'))
     </article>
   </slide>
 
-
-
  <slide>
     <hgroup>
-      <h2>Distinct</h2>
+      <h2>Find Distinct Values</h2>
     </hgroup>
     <article>
       <p> List unique values for a field within a collection</p>
@@ -752,10 +750,40 @@ m$distinct("carrier", query = '{"distance":{"$gt":3000}}')
     </article>
   </slide>
 
+  <slide>
+    <hgroup>
+      <h2>In-database Aggregation</h2>
+    </hgroup>
+    <article>
+    <p>MongoDB includes a nice <a href="http://docs.mongodb.org/manual/applications/aggregation/">aggregation framework</a>.</p>
+<pre class="prettyprint" data-lang="r">
+m$aggregate('[{"$group":{
+  "_id":"$carrier", 
+  "count": {"$sum":1}, 
+  "average":{"$avg":"$distance"}
+}}]')
+</pre>
+
+<pre class = "smaller" data-lang="output">
+   _id count   average
+1   OO    32  500.8125
+2   9E 18460  530.2358
+3   FL  3260  664.8294
+4   AS   714 2402.0000
+5   WN 12275  996.2691
+6   B6 54635 1068.6215
+7   US 20536  553.4563
+...
+</pre>
+
+
+    </article>
+  </slide>    
+
 
   <slide>
     <hgroup>
-      <h2>Streaming MongoDB results</h2>
+      <h2>Stream MongoDB Results</h2>
     </hgroup>
     <article>
     <p>Identical to <code>stream_in</code> in <code>jsonlite</code>. Specify a <code>handler</code> function to incrementally process (large) data:</p>
@@ -769,9 +797,10 @@ m$find(query = '{}', pagesize = 1000, handler = function(df){
     </article>
   </slide>      
 
+
  <slide>
     <hgroup>
-      <h2>Remove</h2>
+      <h2>Remove Data</h2>
     </hgroup>
     <article>
       <p> Delete all query matches</p>
