@@ -406,7 +406,7 @@ stream_in(con, function(df){
 </pre>
     <p>The default <code>handler</code> collects all pages and rbinds them at the end (i.e. import).</p>
     </article>
-  </slide>    
+  </slide>
 
   <slide>
     <hgroup>
@@ -730,7 +730,8 @@ system.time(m$count('{"day":31, "month":12}'))
 </pre>
 
     </article>
-  </slide>       
+  </slide>
+
 
 
  <slide>
@@ -750,6 +751,23 @@ m$distinct("carrier", query = '{"distance":{"$gt":3000}}')
 </pre>
     </article>
   </slide>
+
+
+  <slide>
+    <hgroup>
+      <h2>Streaming MongoDB results</h2>
+    </hgroup>
+    <article>
+    <p>Identical to <code>stream_in</code> in <code>jsonlite</code>. Specify a <code>handler</code> function to incrementally process (large) data:</p>
+<pre class="prettyprint" data-lang="r">
+m$find(query = '{}', pagesize = 1000, handler = function(df){
+  # Processes a page of data
+  cat("Got data frame with", nrow(df), "rows\n")
+})
+</pre>
+    <p>The default <code>handler</code> collects all pages and rbinds them at the end (i.e. import).</p>
+    </article>
+  </slide>      
 
  <slide>
     <hgroup>
