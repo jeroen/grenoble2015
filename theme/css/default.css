@@ -305,11 +305,8 @@ slides > slide:not(.nobackground):before {
   position: absolute;
   bottom: 20px;
   left: 60px;
-  background: url(../../images/google_developers_icon_128.png) no-repeat 0 50%;
-  -webkit-background-size: 30px 30px;
-  -moz-background-size: 30px 30px;
-  -o-background-size: 30px 30px;
-  background-size: 30px 30px;
+  background: url(../../images/user2015/Rlogo.png) no-repeat 0 50%;
+  background-size: 30px 25px;
   padding-left: 40px;
   height: 30px;
   line-height: 1.9;
