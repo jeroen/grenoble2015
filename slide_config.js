@@ -1,8 +1,8 @@
 var SLIDE_CONFIG = {
   // Slide settings
   settings: {
-    title: 'jsonlite and mongolite',
-    subtitle: 'Fast and Simple Data IO in R',
+    title: 'Streaming Data IO in R',
+    subtitle: 'curl, jsonlite, mongolite',
     //eventInfo: {
     //  title: 'Google I/O',
     //  date: '6/x/2013'
@@ -23,7 +23,7 @@ var SLIDE_CONFIG = {
   // Author information
   presenters: [{
     name: 'Jeroen Ooms',
-    company: 'Postdoc / Consultant<br>UCLA',
+    company: 'UCLA',
     gplus: 'https://plus.google.com/+jeroenooms',
     twitter: '@opencpu',
     www: 'https://jeroenooms.github.io/',

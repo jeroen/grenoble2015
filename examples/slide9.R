@@ -1,3 +1,5 @@
+### Slide 9: json example
+
 json <- '{
   "topic" :  "jsonlite and mongolite",
   "talks" : [
@@ -18,7 +20,7 @@ json <- '{
   "slides" : "http://bit.ly/json2015"
 }'
 
-talks <- jsonlite::fromJSON(json)
+info <- jsonlite::fromJSON(json)
 print(info$topic)
 
 print(info$speaker$affiliation)

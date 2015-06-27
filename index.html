@@ -60,11 +60,13 @@ URL: https://code.google.com/p/io-2012-slides
     </hgroup>
   </slide>
 
+
   <slide class="title-slide logoslide">
     <article class="flexbox vcenter">
       <h1 style="font-size: 48px;">http://bit.ly/mongo-slides</h1>
     </article>
   </slide>
+  
 
   <slide class="segue dark nobackground">
     <aside class="gdbar"><img src="images/user2015/mushroom.png"></aside>
@@ -74,35 +76,8 @@ URL: https://code.google.com/p/io-2012-slides
     </hgroup>
   </slide>
 
-  <slide>
-    <hgroup>
-      <h2>What is JSON</h2>
-    </hgroup>
-    <article class="smaller">
-      <p>Arrays, Objects and 5 primitives (string, number, true, false, null). Whitespace and linebreaks optional.</p>
-      <pre class="prettyprint" data-lang="json">
-{
-  "topic" :  "jsonlite and mongolite",
-  "talks" : [
-    {
-      "date" : "2015-06-25",
-      "location" : "Grenoble"
-    },{
-      "date" : "2015-07-01",
-      "location" : "Aalborg"
-    }
-  ],
-  "speaker" : {
-    "name" : "Jeroen Ooms",
-    "age" : 30,
-    "affiliation" : "UCLA",
-    "francophone" : false
-  },
-  "slides" : "http://bit.ly/mongo-slides"
-}
-</pre>
-    </article>
-  </slide>  
+  <slide class="fill nobackground" style="background-image: url(images/user2015/json_screenshot1.png)"> </slide> 
+  <slide class="fill nobackground" style="background-image: url(images/user2015/json_screenshot2.png)"> </slide>
 
   <slide>
     <hgroup>
@@ -126,71 +101,33 @@ URL: https://code.google.com/p/io-2012-slides
         <li>Parsers: <b>rjson</b> (2007), <b>RJSONIO</b> (2010), <b>jsonlite</b> (2013)</li>
         <li>MongoDB: <b>RMongo</b> (2011), <b>rmongodb</b> (2011), <b>mongolite</b> (2014)</li>
       </ul>
-    </article>    
+    </article>
   </slide>
 
   <slide>
     <hgroup>
-      <h2>Example in R</h2>
-    </hgroup>
-    <article class="smaller">
-      <pre class="prettyprint" data-lang="r">> json <- '{
-  "topic" :  "jsonlite and mongolite",
-  "talks" : [
-    {
-      "date" : "2015-06-25",
-      "location" : "Grenoble"
-    },{
-      "date" : "2015-07-01",
-      "location" : "Aalborg"
-    }
-  ],
-  "speaker" : {
-    "name" : "Jeroen Ooms",
-    "age" : 30,
-    "affiliation" : "UCLA",
-    "francophone" : false
-  },
-  "slides" : "http://bit.ly/json2015"
-}'
-> info <- jsonlite::fromJSON(json)
-> print(info$topic)
-[1] "jsonlite and mongolite"
-> print(info$speaker$affiliation)
-[1] "UCLA"
-</pre>
-    </article>
-  </slide>  
-
-  <slide class="fill nobackground" style="background-image: url(images/user2015/json_screenshot1.png)"> </slide> 
-  <slide class="fill nobackground" style="background-image: url(images/user2015/json_screenshot2.png)"> </slide>
-
-  <slide>
-    <hgroup>
-      <h2>Data Frames</h2>
+      <h2>Data Frames in JSON</h2>
     </hgroup>
     <article>
-    <p>jsonlite and mongolite automatically convert data frames</p>
+    <p>jsonlite and mongolite are optimized for data frames</p>
       <pre class="prettyprint" data-lang="r">
-> json <- toJSON(mtcars)
-> all.equal(mtcars, fromJSON(json))
-TRUE
+json <- toJSON(mtcars)
+all.equal(mtcars, fromJSON(json))
+# TRUE
 </pre>
 
-<p>And they do so pretty <b>fast</b>:</p>
+<p>Very decent performance:</p>
       <pre class="prettyprint" data-lang="r">
-> data(diamonds, package= "ggplot2")
-> system.time(json <- toJSON(diamonds))
-   user  system elapsed 
-  0.138   0.004   0.142
-> system.time(out <- fromJSON(json))
-   user  system elapsed 
-  0.892   0.022   0.915
+data(diamonds, package= "ggplot2")
+system.time(json <- toJSON(diamonds))
+#   user  system elapsed 
+#  0.138   0.004   0.142
+system.time(out <- fromJSON(json))
+#   user  system elapsed 
+#  0.892   0.022   0.915
 </pre>
     </article>
   </slide> 
-
-
 
   <slide>
     <hgroup>
@@ -221,10 +158,9 @@ curl("https://api.github.com/repos/hadley/ggplot2/issues") %>%
 
   <slide>
     <hgroup>
-      <h2>Building pipelines</h2>
+      <h2>Aggregation Example</h2>
     </hgroup>
     <article>
-    <p>Aggregation with dplyr</p>
       <pre class="prettyprint" data-lang="r">
 library(curl)
 library(jsonlite)
@@ -280,7 +216,7 @@ curl("https://api.github.com/repos/rstudio/shiny/commits") %>%
       <h2>Level 2</h2>
       <h3>Streaming</h3>
     </hgroup>
-  </slide>
+  </slide>  
 
   <slide>
     <hgroup>
@@ -308,7 +244,7 @@ fromJSON("hugefile.json")
 
     <slide>
     <hgroup>
-      <h2>Streamable JSON (www.ndjson.org)</h2>
+      <h2>Newline Delimited JSON (www.ndjson.org)</h2>
     </hgroup>    
     <article class="iframewrapper">
       <iframe scrolling="no" src="http://ndjson.org/"></iframe>
@@ -325,10 +261,13 @@ fromJSON("hugefile.json")
       <p> <code>stream_in</code> and <code>stream_out</code> read/write data frames
       as jsonlines to a <b>connection</b> object, such as a file, socket, url or pipe.</p>
       <pre class="prettyprint" data-lang="r">
-# Stream to terminal (not very useful)
+# Stream to terminal
 library(jsonlite)
 library(MASS)
-> stream_out(cats, stdout())
+stream_out(cats, stdout())
+</pre>
+
+      <pre data-lang="output">
 {"Sex":"F","Bwt":2,"Hwt":7}
 {"Sex":"F","Bwt":2,"Hwt":7.4}
 {"Sex":"F","Bwt":2,"Hwt":9.5}
@@ -337,7 +276,6 @@ library(MASS)
 {"Sex":"F","Bwt":2.1,"Hwt":7.6}
 {"Sex":"F","Bwt":2.1,"Hwt":8.1}
 {"Sex":"F","Bwt":2.1,"Hwt":8.2}
-{"Sex":"F","Bwt":2.1,"Hwt":8.3}
 </pre>
     </article>
   </slide>   
@@ -353,10 +291,6 @@ library(jsonlite)
 library(curl)
 con <- curl("https://jeroenooms.github.io/data/diamonds.json")
 mydata <- stream_in(con, pagesize = 1000)
-# opening curl input connection.
-# Found 53940 lines...
-# binding pages together (no custom handler).
-# closing curl input connection.
 </pre>
       <p>Or with gzip compression:</p>
       <pre class="prettyprint" data-lang="r">
@@ -375,15 +309,11 @@ mydata <- stream_in(gzcon(con), pagesize = 1000)
       <pre class="prettyprint" data-lang="r">
 library(nycflights13)
 stream_out(flights, file(tmp <- tempfile()))
-# Complete! Processed total of 336776 rows.
 </pre>
       <p>Stream it back into R:</p>
       <pre class="prettyprint" data-lang="r">
 flights2 <- stream_in(file(tmp))
-# Found 336776 lines...
-# binding pages together (no custom handler).
 all.equal(flights2, as.data.frame(flights))
-# [1] TRUE
 unlink(tmp)
 </pre>
     </article>
@@ -399,7 +329,7 @@ unlink(tmp)
 <pre class="prettyprint" data-lang="r">
 library(curl)
 con <- gzcon(curl("http://jeroenooms.github.io/data/diamonds.json"))
-stream_in(con, function(df){
+stream_in(con, handler = function(df){
   # Processes a page of data
   cat("Got data frame with", nrow(df), "rows\n")
 }, pagesize = 1000, verbose = FALSE)
@@ -438,6 +368,7 @@ close(output)
     </hgroup>
   </slide>  
 
+
   <slide>
     <hgroup>
       <h2>What is MongoDB?</h2>
@@ -456,6 +387,9 @@ close(output)
       </ul>
     </article>
   </slide>
+
+  <slide class="fill nobackground" style="background-image: url(images/user2015/diamonds.png)"> </slide>
+
 
   <slide>
     <hgroup>
@@ -597,6 +531,26 @@ Mongo collection 'test'
  </pre>
 
     </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Connection management</h2>
+    </hgroup>
+    <article>
+      <p>Database connections are automatically cleaned up</p>
+      <pre class="prettyprint" data-lang="r">
+m <- mongo("test")
+rm(m)
+gc()
+</pre>
+<p>Automatic reconnecting</p>
+      <pre class="prettyprint" data-lang="r">
+m <- mongo("test")
+m$info()$server$uptime
+</pre>
+
+    </article>
   </slide>   
 
   <slide>
@@ -612,15 +566,12 @@ library(nycflights13)
 # Insert some data
 m <- mongo(collection = "nycflights")
 m$insert(flights)
-# Complete! Processed total of 336776 rows.
 
 # Total number of records
 m$count()
-## [1] 336776
 
 # Matches for given query
 m$count('{"month":1, "day":1}')
-## [1] 842
 </pre>
 
     </article>
@@ -852,6 +803,7 @@ dmd <- stream_in(file("~/diamonds.ndjson"))
       <h3>Map/Reduce</h3>
     </hgroup>
   </slide> 
+
 
 
  <slide>
