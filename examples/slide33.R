@@ -1,3 +1,20 @@
+### Slide 31
+library(mongolite)
+m <- mongo(collection = "test",  db = "test", url = "mongodb://localhost")
+print(m)
+
+
+### Slide 32
+m <- mongo("test")
+rm(m)
+gc()
+
+# Reconnecting
+m <- mongo("test")
+m$info()$server$uptime
+
+
+#### Slide 33
 library(mongolite)
 library(nycflights13)
 
@@ -28,7 +45,7 @@ test <- m$find(fields = '{"tailnum" : true, "distance" : true, "_id": false}')
 names(test)
 
 
-##### Slide 35
+##### Slide 35: sorting
 jan1 <- m$find('{"month":1,"day":1}', sort='{"distance":-1}')
 head(jan1)
 
@@ -77,26 +94,20 @@ m$find(query = '{}', pagesize = 1000, handler = function(df){
 
 
 ### Slide 41: removing
-m$count()
-m$remove('{"carrier": "UA"}', multiple = TRUE)
-m$count()
-
-m$remove('{"_id":{"$oid":"4d512b45cc9374271b02ec4f"}}')
-
-m$drop()
-
-
-
-### Slide 42: import/export
 library(curl)
 library(mongolite)
 m2 <- mongo("diamonds")
 m2$import(curl("https://jeroenooms.github.io/data/diamonds.json"))
 m2$count()
 
-# export to jsonlines
+# Stream to file
 m2$export(file("~/diamonds.ndjson"))
+dmd <- jsonlite::stream_in(file("~/diamonds.ndjson"))
 
-# Test that it worked
-library(jsonlite)
-dmd <- stream_in(file("~/diamonds.ndjson"))
+### Slide 42: removing
+m$count()
+m$remove('{"carrier": "UA"}', multiple = TRUE)
+m$count()
+
+m$remove('{"_id":{"$oid":"4d512b45cc9374271b02ec4f"}}')
+m$drop()
