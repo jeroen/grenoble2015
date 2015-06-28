@@ -237,6 +237,7 @@ fromJSON("hugefile.json")
         <li>Cannot access data piecewise or incrementally</li>
         <li>Takes forever</li>
       </ul>
+      <p>Two solutions...</p>
     </article>
 </div>
   </slide>
@@ -258,8 +259,8 @@ fromJSON("hugefile.json")
       <h2>Streaming in R</h2>
     </hgroup>
     <article>
-      <p> <code>stream_in</code> and <code>stream_out</code> read/write data frames
-      as jsonlines to a <b>connection</b> object, such as a file, socket, url or pipe.</p>
+      <p> <code class="red">stream_in</code> and <code class="red">stream_out</code> use readlines/writelines to stream data frames
+      as ndjson to a <b>connection</b> object (file, socket, url or pipe)</p>
       <pre class="prettyprint" data-lang="r">
 # Stream to terminal
 library(jsonlite)
@@ -377,9 +378,8 @@ close(output)
       <img style="float:right; width: 350px;" src="images/user2015/mongo.jpg" class="reflect" alt="Description" title="Description">
       <ul>
         <li>JSON 'document' database</li>
-        <li>Store "humongous" data</li>
-        <li>Open Source (AGPL / Apache)</li>
         <li>Written in C / C++</li>
+        <li>Open Source (AGPL / Apache 2)</li>
         <li>Active development</li>
         <li>High quality drivers</li>
         <li>Well documented</li>
@@ -396,7 +396,7 @@ close(output)
       <h2>How does it work?</h2>
     </hgroup>
     <article>
-      <p>Imagine a (very big) ndjson file with an API for:</p>
+      <p>Mongo stores a 'collection' of documents (json objects) with an API:</p>
       <ul>
         <li>CRUD</li>
         <li>search</li>
@@ -746,6 +746,31 @@ m$find(query = '{}', pagesize = 1000, handler = function(df){
 </pre>
     <p>The default <code>handler</code> collects all pages and rbinds them at the end (i.e. import).</p>
     </article>
+  </slide>  
+
+   <slide>
+    <hgroup>
+      <h2>Import / Export</h2>
+    </hgroup>
+    <article>
+      <p> Stream ndjson into mongo</p>
+      <pre class="prettyprint" data-lang="r">
+library(curl)
+library(mongolite)
+m2 <- mongo("diamonds")
+m2$import(curl("https://jeroenooms.github.io/data/diamonds.json"))
+m2$count()
+# [1] 53940
+</pre>
+      <p> Export to ndjson</p>
+      <pre class="prettyprint" data-lang="r">
+m2$export(file("~/diamonds.ndjson"))
+
+# Test that it worked
+library(jsonlite)
+dmd <- stream_in(file("~/diamonds.ndjson"))
+</pre>
+    </article>
   </slide>      
 
 
@@ -771,30 +796,24 @@ m$drop()
     </article>
   </slide>
 
- <slide>
+  <slide>
     <hgroup>
-      <h2>Import / Export</h2>
+      <h2>Conclusion</h2>
     </hgroup>
     <article>
-      <p> Stream jsonlines into mongo</p>
-      <pre class="prettyprint" data-lang="r">
-library(curl)
-library(mongolite)
-m2 <- mongo("diamonds")
-m2$import(curl("https://jeroenooms.github.io/data/diamonds.json"))
-m2$count()
-# [1] 53940
-</pre>
-      <p> Export to jsonlintes</p>
-      <pre class="prettyprint" data-lang="r">
-m2$export(file("~/diamonds.ndjson"))
-
-# Test that it worked
-library(jsonlite)
-dmd <- stream_in(file("~/diamonds.ndjson"))
-</pre>
+      <img style="float:right; width: 350px;" src="images/user2015/mongo.jpg" class="reflect" alt="Description" title="Description">
+      <p>What I like about Mongo</p>
+      <ul>
+        <li>Flexible and Informal (no schemas, definitions)</li>
+        <li>JSON queries: easy to construct dynamically</li>
+        <li>Light weight (No Java, Cloud, etc)</li>
+        <li>Scales both up and down</li>
+        <li>Interoperable! Data remains very accessible</li>
+        <li>In database aggregation, map-reduce</li>
+      </ul>
     </article>
-  </slide>  
+  </slide>
+
 
     <slide class="segue dark nobackground">
     <aside class="gdbar"><img src="images/user2015/star.png"></aside>
@@ -915,7 +934,13 @@ sort(kmeans(diamonds$x, 3)$centers)
   </slide>   
 
 
-  <slide class="fill nobackground" style="background-image: url(images/user2015/castle.png)"> </slide> 
+  <slide class="fill nobackground" style="background-image: url(images/user2015/castle.png)">
+    <article class="flexbox vcenter">
+      <hgroup>
+        <h2 class="white vcenter">Congratulations!</h2>
+      </hgroup>
+    </article>
+  </slide> 
 
 <!--
   <slide class="logoslide dark nobackground">
